@@ -11,7 +11,7 @@ function setup() { //setting up the canvas
   createCanvas(windowWidth, windowHeight);
 }
 
-let currentBack = 1; //setting up the variables for the challenge feature
+let currentBack = 0; //setting up the variables for the challenge feature
 
 
 //copied from CS30 notes
@@ -64,28 +64,36 @@ function background1() {
 function background2() {
   background(49, 71, 94);
   moon(49, 71, 94, 1350, 450);
-  mountain(700,50,100)
-  mountain(500,0,250)
+  mountain(700,50,100);
+  mountain(500,0,250);
 
 }
 
 function background3() {
   background(0, 0, 0);
-  moon(0,0,0,860,240)
-  mountain(150,0,300)
-  mountain(250,50,100)
+  moon(0,0,0,860,240);
+  mountain(150,0,300);
+  mountain(250,50,100);
 }
 
 function background4() {
   gradientBackground(140, 40, 210);
-  sun(1300)
-  mountain(500,70,100)
-  mountain(300,20,250)
+  sun(1300);
+  mountain(500,70,100);
+  mountain(300,20,250);
 }
 
 function nametag(){ //Adding my name to the bottom right corner of the screen
   textSize(30);
   text("Anees Ahmad", windowWidth-220, windowHeight-20);
+}
+
+
+// adding a floor or ground to the background to give hte character a place to stand
+function ground(){
+  fill(300, 300, 300);
+  rectMode(CORNER);
+  rect(0, 700, windowWidth, 300);
 }
 
 // Creating the CHARACTER
@@ -126,40 +134,38 @@ function character() {
 
 
 //This function changes the Snowman's Y position based on either the up or down arrow.
-function keyReleased(){
+function keyPressed(){
   if (keyCode === 38){
     snowmanY=snowmanY-10;
   }
   else if(keyCode === 40){
-    snowmanY=snowmanY+10
+    snowmanY=snowmanY+10;
   }
 }
 
 function mouseReleased() { //this function is called when the user presses a mouse button
   if (mouseButton === CENTER) { // the following code only activates when the button that is pressed is the "center" button.
     console.log("CENTER");
-    if (currentBack === 4) currentBack = 0;
+    if (currentBack ===3 ) currentBack = -1;
     currentBack ++; // cycling through each background
     console.log(currentBack); //for debugging purposes
   }
 }
 
 function backgroundChange() { //adding the processing function for the both the background cycler and the different backgrounds.
-  if (currentBack === 1) background1(); // This code makes sure that depending on which mode the background is at a specific scene will show.
-  else if (currentBack === 2) background2();
-  else if (currentBack === 3) background3();
-  else if (currentBack === 4) background4();
+  if (currentBack === 0) background1(); // This code makes sure that depending on which mode the background is at a specific scene will show.
+  else if (currentBack === 1) background2();
+  else if (currentBack === 2) background3();
+  else if (currentBack === 3) background4();
 }
 
 //The drawing function
 
 function draw() {
-  console.log(windowHeight, windowWidth);
+  console.log(windowHeight, windowWidth); //adding console logs for debugging purposes
   backgroundChange();
   noStroke();
-  fill(300, 300, 300);
-  rectMode(CORNER)
-  rect(0, 700, windowWidth, 300);
+  ground();
   character();
   nametag();
 }
