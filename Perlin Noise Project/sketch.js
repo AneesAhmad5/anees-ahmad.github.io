@@ -19,41 +19,41 @@ let cInterval = 0.01; //how fast we move down the noise graph
 function draw() {
   background(220);
   generateTerrain();
-  frameRate()
+  frameRate();
 
 }
 
 let tWidth = 10
 let start = 0
-function generateTerrain(){
-  let maxY = 10
-  let maxX = 0
+function generateTerrain() {
+  let maxY = 0
+  let posX = 0
   stroke(0);
   noFill();
-  let time = 0   //start
-  for(let x = 0; x < width; x+=tWidth) {
-    stroke(0)
-    let y = noise(time) * height;
-    if(y>maxY){
+  let time = start
+  for (let x = 0; x < width; x += tWidth) {
+    let y = (noise(time) * height);
+    console.log(y);
+    if (y > maxY) {
       maxY = y;
-      maxX = x; //*** */
-      drawFlag(maxX,maxY);
+      posX = x;
     }
-    rect(x,height,tWidth,-y);
+    rect(x, height, tWidth, -1 * y);
     time += cInterval;
   }
-  // start += cInterval;
+  drawFlag(posX, windowHeight - maxY);
+  start += cInterval;
 }
 
-function keyReleased(){
-  if(keyCode === LEFT_ARROW){
-    if (tWidth > 0.001){ 
+function keyReleased() {
+  if (keyCode === LEFT_ARROW) {
+    if (tWidth > 0.001) {
       console.log("-tWidth");
       tWidth = tWidth - 1;
-    } 
+    }
   }
-  if(keyCode === RIGHT_ARROW){
-    if (tWidth < 20){
+  if (keyCode === RIGHT_ARROW) {
+    if (tWidth < 20) {
       console.log("+tWidth");
       tWidth = tWidth + 1;
     }
@@ -61,8 +61,9 @@ function keyReleased(){
 }
 
 
-function drawFlag(x, y){
+function drawFlag(x, y) {
+  fill(255,0,0);
   stroke(0);
-  line(x,y,x,y-40)
-  triangle(x,y-40,x,y-20,x+20,y-30)
+  line(x, y, x, y - 40)
+  triangle(x, y - 40, x, y - 20, x + 20, y - 30)
 }
