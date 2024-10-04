@@ -23,26 +23,31 @@ function draw() {
 
 }
 
-let tWidth = 10
-let start = 0
+let tWidth = 10;
+let start = 0;
 function generateTerrain() {
-  let maxY = 0
-  let posX = 0
-  stroke(0);
+  let maxY = 0;
+  let posX = 0;
+  let averageY = 0;
   noFill();
-  let time = start
+  let time = start;
   for (let x = 0; x < width; x += tWidth) {
     let y = (noise(time) * height);
-    console.log(y);
+    console.log("the y is " + y);
+    console.log("the x is " + x);
+    averageY = (averageY + y);
+    console.log("the average y is " + (averageY/x));
     if (y > maxY) {
       maxY = y;
       posX = x;
     }
+    stroke(0);
     rect(x, height, tWidth, -1 * y);
     time += cInterval;
   }
   drawFlag(posX, windowHeight - maxY);
   start += cInterval;
+
 }
 
 function keyReleased() {
@@ -60,10 +65,14 @@ function keyReleased() {
   }
 }
 
+function avgLine(y, x){
+  stroke(255,0,0);
+  line(0,y/x,width,y/x)
+}
 
 function drawFlag(x, y) {
   fill(255,0,0);
   stroke(0);
-  line(x, y, x, y - 40)
-  triangle(x, y - 40, x, y - 20, x + 20, y - 30)
+  line(x, y, x, y - 40);
+  triangle(x, y - 40, x, y - 20, x + 20, y - 30);
 }
