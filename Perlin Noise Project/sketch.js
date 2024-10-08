@@ -13,46 +13,56 @@ function setup() {
 
 // Perlin noise terrain generator.
 // let cTime = 5; //current "noise" time
-let cInterval = 0.01; //how fast we move down the noise graph
+let cInterval = 0.01; //how fast we move down/up the noise graph
 
 //Drawing function where elements come into play
 function draw() {
   background(220);
   generateTerrain();
-  frameRate();
-
 }
 
-let tWidth = 10;
-let start = 0;
+
+//CREATING TERRAIN GENERATION
+
+
+let tWidth = 10; //The terrain width for each rectangle
+let start = 0;   //A variable that is used to pan the terrain left. 
+let averageY = 0;  //A variable that collects all the rectangle heights and adds them up
+let totalRect = 0; // A variable that collects all the number of rectangles and divides 
 function generateTerrain() {
   let maxY = 0;
   let posX = 0;
-  let averageY = 0;
+  averageY = 0;
+
   noFill();
   let time = start;
   for (let x = 0; x < width; x += tWidth) {
     let y = (noise(time) * height);
-    console.log("the y is " + y);
-    console.log("the x is " + x);
-    averageY = (averageY + y);
-    console.log("the average y is " + (averageY/x));
+    averageY += y;
     if (y > maxY) {
       maxY = y;
       posX = x;
     }
     stroke(0);
     rect(x, height, tWidth, -1 * y);
+   
+    
     time += cInterval;
+
   }
+  totalRect = (windowWidth/tWidth);
+  console.log(totalRect);
+
+  console.log(averageY);
   drawFlag(posX, windowHeight - maxY);
+  avgLine(averageY, totalRect);
   start += cInterval;
 
 }
 
 function keyReleased() {
   if (keyCode === LEFT_ARROW) {
-    if (tWidth > 0.001) {
+    if (tWidth > 1) {
       console.log("-tWidth");
       tWidth = tWidth - 1;
     }
@@ -67,7 +77,7 @@ function keyReleased() {
 
 function avgLine(y, x){
   stroke(255,0,0);
-  line(0,y/x,width,y/x)
+  line(0,height - y/x,width,height - y/x)
 }
 
 function drawFlag(x, y) {
