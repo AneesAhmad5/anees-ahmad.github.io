@@ -9,10 +9,10 @@ let westbound = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   for(let n = 0; n < 20; n ++) {
-    eastbound.push(new Vehicle(int(random(2))), 0);
+    eastbound.push(new Vehicle(int(random(2)), 1));
   }
   for(let n = 0; n < 20; n ++) {
-    westbound.push(new Vehicle(int(random(2))), 1);
+    westbound.push(new Vehicle(int(random(2)), 0));
   }
 }
 
@@ -46,7 +46,7 @@ function draw_road() {
 class Vehicle {
   constructor(type, direction) { //setting the constructor variables
     this.x = random(0, width);
-    this.direction = 1;
+    this.direction = direction;
     if(this.direction === 0){
       this.y = this.y = random(height / 2 - 230, height / 2 - 20);
     }
@@ -96,7 +96,6 @@ class Vehicle {
     else if (this.type === 1) {
       this.createTruck();
     }
-    console.log(this.type);
   }
   move() {
     if (this.x <= 0) { 
@@ -108,13 +107,27 @@ class Vehicle {
     this.x += this.xSpeed;
   }
   speedUp() {
-    if (this.xSpeed <= 15) {
-      this.xSpeed += 1;
+    if(this.direction === 1){
+      if(this.xSpeed > -15){
+        this.xSpeed -= 1;
+      }
+    }
+    if(this.direction === 0){
+      if(this.xSpeed < 15){
+        this.xSpeed += 1;
+      }
     }
   }
   speedDown() {
-    if (this.xSpeed >= -15) {
-      this.xSpeed -= 1;
+    if(this.direction === 1){
+      if(this.xSpeed < -1){
+        this.xSpeed +=1;
+      }
+    }
+    if(this.direction === 0){
+      if(this.xSpeed > 5){
+        this.xSpeed -= 1;
+      }
     }
   }
   changeColour() {
@@ -127,7 +140,7 @@ class Vehicle {
     if (this.chance === 1) {
       this.speedUp();
     }
-    else if (this.chance === 2) {
+    if (this.chance === 2) {
       this.speedDown();
     }
     else if (this.chance === 3) {
