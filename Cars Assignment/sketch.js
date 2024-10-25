@@ -19,11 +19,23 @@ function setup() {
 function draw() {
   background(220);
   draw_road(); // creating a road
+  // getting all the cars to move
   for (let i = 0; i < eastbound.length; i++) { //looping through the items in the index
-    eastbound[i].action();  // getting all the cars to move
+    eastbound[i].action(); 
   }
   for (let i = 0; i < westbound.length; i++) { 
     westbound[i].action(); 
+  }
+}
+//challenge feature #1:
+function mouseClicked(){
+  if(mouseButton === LEFT){
+    if(keyIsPressed && keyCode === SHIFT){
+      westbound.push(new Vehicle(int(random(2)), 0));
+    }
+    else{   
+      eastbound.push(new Vehicle(int(random(2)), 1));
+    }
   }
 }
 
@@ -45,26 +57,30 @@ function draw_road() {
 
 class Vehicle {
   constructor(type, direction) { //setting the constructor variables
-    this.x = random(0, width);
-    this.direction = direction;
+    this.x = random(0, width); // x position
+    this.direction = direction; // setting a direction (left = 0, right = 1)
+    // Creating an if else statement to regulate the y position of the cars in reference to the line on the road.  
     if(this.direction === 0){
-      this.y = this.y = random(height / 2 - 230, height / 2 - 20);
+      this.y = this.y = random(height / 2 - 230, height / 2 - 20); // top half
     }
     else{
-      this.y = this.y = random(height / 2 + 230, height / 2 + 20);
+      this.y = this.y = random(height / 2 + 230, height / 2 + 20); // bottom half
     }
-    this.color = color(random(0, 255), random(0, 255), random(0, 255));
-    this.type = type;
+    this.color = color(random(0, 255), random(0, 255), random(0, 255)); // setting each car to a random colour
+    this.type = type; // the type of vehicle: car or truck
+    // creating an if else statement to regulate the direction each car is going in reference to which side of the road they are on.
     if (this.direction === 1){
-      this.xSpeed = this.xSpeed = int(random(5, 10));
+      this.xSpeed = this.xSpeed = int(random(7, 13)); //moving to the right
     }
     else {
-      this.xSpeed = this.xSpeed = int(random(-5, -10));
+      this.xSpeed = this.xSpeed = int(random(-7, -13)); //moving to the left
     }
     this.chance;
   }
+
   createCar() {
     // creating the car
+    noStroke();
     rectMode(CENTER);
     fill(255);
     //wheels
@@ -76,8 +92,10 @@ class Vehicle {
     fill(this.color);
     rect(this.x, this.y, 40, 16);
   }
+
   createTruck(){
     // creating the truck
+    noStroke();
     rectMode(CENTER);
     //wheels
     fill(255);
@@ -88,8 +106,19 @@ class Vehicle {
     //body
     fill(this.color);
     rect(this.x, this.y, 80, 30);  
+    stroke(0);
+    strokeWeight(5);
+    //because the truck has a head, it has to change depending on its direction.
+    if(this.direction === 0){
+      line(this.x-10, this.y + 15, this.x-10, this.y -15);
+    }
+    if(this.direction === 1){
+      line(this.x+10, this.y + 15, this.x+10, this.y -15);
+    }
   }
+  //displaying both cars and trucks
   display() {
+    //either car or truck will show up depending on its type
     if (this.type === 0) {
       this.createCar();
     }
@@ -97,50 +126,59 @@ class Vehicle {
       this.createTruck();
     }
   }
+  //how each car will move
   move() {
+    //these if statements make the car loop back across the screen
     if (this.x <= 0) { 
       this.x += width; 
     }
     if (this.x >= windowWidth) { 
       this.x -= width; 
     }
+    // move forward by the speed
     this.x += this.xSpeed;
   }
+  //speeding up: 1/100
   speedUp() {
-    if(this.direction === 1){
+    if(this.direction === 0){ // if the vehicle is going left then its speed cant go over -15
       if(this.xSpeed > -15){
         this.xSpeed -= 1;
       }
     }
-    if(this.direction === 0){
+    if(this.direction === 1){ // if the vehicle is going right then its speed cant go over 15
       if(this.xSpeed < 15){
         this.xSpeed += 1;
       }
     }
   }
   speedDown() {
-    if(this.direction === 1){
-      if(this.xSpeed < -1){
+    if(this.direction === 0){ // if the vehicle is going left then its speed cant go beneath -5
+      if(this.xSpeed < -5){
         this.xSpeed +=1;
       }
     }
-    if(this.direction === 0){
+    if(this.direction === 1){ // if the vehicle is going right then its speed cant go beneath 5
       if(this.xSpeed > 5){
         this.xSpeed -= 1;
       }
     }
   }
+
+  //randomized colour change: 1/100
   changeColour() {
     this.color = color(random(0, 255), random(0, 255), random(0, 255));
   }
+  //calling up all the functions in the class.
   action() {
     this.display();
     this.move();
-    this.chance = int(random(0, 100));    // is this inclusive? yes it is actually
+
+    //setting a variable that will randomly out of 100 come into effect. 
+    this.chance = int(random(0, 100));  //0-99
     if (this.chance === 1) {
       this.speedUp();
     }
-    if (this.chance === 2) {
+    else if (this.chance === 2) {
       this.speedDown();
     }
     else if (this.chance === 3) {
