@@ -4,6 +4,7 @@
 // A program that displays a highway of cars going opposite directions.
 
 // creating two arrays to hold all the variables and differ directions
+let TrafficLight1;
 let eastbound = [];
 let westbound = [];
 function setup() {
@@ -14,6 +15,7 @@ function setup() {
   for(let n = 0; n < 20; n ++) {
     westbound.push(new Vehicle(int(random(2)), 0));
   }
+  TrafficLight1 = new TrafficLight(width/2, 100, 0);
 }
 
 function draw() {
@@ -26,22 +28,37 @@ function draw() {
   for (let i = 0; i < westbound.length; i++) { 
     westbound[i].action(); 
   }
+  TrafficLight1.display();
 }
 //challenge feature #1:
 function mouseClicked(){
   if(mouseButton === LEFT){
     if(keyIsPressed && keyCode === SHIFT){
-      westbound.push(new Vehicle(int(random(2)), 0));
+      eastbound.push(new Vehicle(int(random(2)), 1));
     }
     else{   
-      eastbound.push(new Vehicle(int(random(2)), 1));
+      westbound.push(new Vehicle(int(random(2)), 0));
     }
   }
 }
 
 
+function keyPressed(){
+  if(keyCode === 32){
+    console.log('redlight');
+    red_light();
+  }
+}
+//challenge feature # 2
+function red_light(){
+  while(frameCount % 120 !== 0){
+    TrafficLight1 = new TrafficLight(width/2, 100, 1);
+  }
+  TrafficLight1 = new TrafficLight(width/2, 100, 0);
+}
+
 //creating the road
-let stripespace = 100; //adding a space between lines
+let stripespace = 100; //adding a space between lines 
 function draw_road() {
   rectMode(CENTER);
   noStroke();
@@ -184,6 +201,38 @@ class Vehicle {
     else if (this.chance === 3) {
       this.changeColour();
     }
+  }
+}
+
+
+//challenge feature #2
+class TrafficLight {
+  constructor(x,y, redlight){
+    this.x = x;
+    this.y = y;
+    this.pause = 120;
+    this.redlight = redlight;
+    if(this.redlight === 0){ //off
+      this.r = 0;
+    }
+    else{
+      this.r = color(255,0,0);
+    }
+    if(this.redlight === 1){ //on  
+      this.g = 0;
+    }
+    else{
+      this.g = color(0,255,0);
+    }
+  }
+  display(){
+    rectMode(CENTER);
+    fill(0);
+    rect(this.x, this.y, 50, 100);
+    fill(this.r);
+    circle(this.x, this.y-20, 25);
+    fill(this.g);
+    circle(this.x, this.y+20, 25);
   }
 }
 
