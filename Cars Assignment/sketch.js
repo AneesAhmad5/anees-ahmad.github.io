@@ -7,6 +7,11 @@
 let TrafficLight1;
 let eastbound = [];
 let westbound = [];
+
+
+let framecounter = 0; //used to count frames
+
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   for(let n = 0; n < 20; n ++) {
@@ -15,26 +20,43 @@ function setup() {
   for(let n = 0; n < 20; n ++) {
     westbound.push(new Vehicle(int(random(2)), 0));
   }
-  TrafficLight1 = new TrafficLight(width/2, 100, 0);
+  TrafficLight1 = new TrafficLight(width/2, 100);
 }
 
 function draw() {
   background(220);
   draw_road(); // creating a road
   // getting all the cars to move
+  TrafficLight1.display();
   for (let i = 0; i < eastbound.length; i++) { //looping through the items in the index
     eastbound[i].action(); 
   }
   for (let i = 0; i < westbound.length; i++) { 
     westbound[i].action(); 
   }
-  TrafficLight1.display();
+
+  //for challenge #2, we need to start the green light after 120 frams
+  framecounter ++;
+  console.log(framecounter);
+  if(framecounter === 120){
+    TrafficLight1.green_light();
+  }
 }
+
+//challenge feature #2:
+function keyPressed(){
+  if(keyCode === 32){
+    framecounter = 0;
+    TrafficLight1.red_light(); //starting the red light.
+  }
+}
+
+
 //challenge feature #1:
 function mouseClicked(){
   if(mouseButton === LEFT){
     if(keyIsPressed && keyCode === SHIFT){
-      eastbound.push(new Vehicle(int(random(2)), 1));
+      eastbound.push(new Vehicle(int(random(2)), 1)); //creating a new vehicle with each button press
     }
     else{   
       westbound.push(new Vehicle(int(random(2)), 0));
@@ -42,20 +64,6 @@ function mouseClicked(){
   }
 }
 
-
-function keyPressed(){
-  if(keyCode === 32){
-    console.log('redlight');
-    red_light();
-  }
-}
-//challenge feature # 2
-function red_light(){
-  while(frameCount % 120 !== 0){
-    TrafficLight1 = new TrafficLight(width/2, 100, 1);
-  }
-  TrafficLight1 = new TrafficLight(width/2, 100, 0);
-}
 
 //creating the road
 let stripespace = 100; //adding a space between lines 
@@ -93,6 +101,9 @@ class Vehicle {
       this.xSpeed = this.xSpeed = int(random(-7, -13)); //moving to the left
     }
     this.chance;
+
+    //setting a variable telling the cars to stop.
+    this.stop = 1;
   }
 
   createCar() {
@@ -153,28 +164,30 @@ class Vehicle {
       this.x -= width; 
     }
     // move forward by the speed
-    this.x += this.xSpeed;
+    if(this.stop !== 0){
+      this.x += this.xSpeed;
+    }
   }
   //speeding up: 1/100
   speedUp() {
-    if(this.direction === 0){ // if the vehicle is going left then its speed cant go over -15
+    if(this.direction === 0 && this.stop !== 0){ // if the vehicle is going left then its speed cant go over -15
       if(this.xSpeed > -15){
         this.xSpeed -= 1;
       }
     }
-    if(this.direction === 1){ // if the vehicle is going right then its speed cant go over 15
+    if(this.direction === 1 && this.stop !== 0){ // if the vehicle is going right then its speed cant go over 15
       if(this.xSpeed < 15){
         this.xSpeed += 1;
       }
     }
   }
   speedDown() {
-    if(this.direction === 0){ // if the vehicle is going left then its speed cant go beneath -5
+    if(this.direction === 0 && this.stop !== 0){ // if the vehicle is going left then its speed cant go beneath -5
       if(this.xSpeed < -5){
         this.xSpeed +=1;
       }
     }
-    if(this.direction === 1){ // if the vehicle is going right then its speed cant go beneath 5
+    if(this.direction === 1 && this.stop !== 0){ // if the vehicle is going right then its speed cant go beneath 5
       if(this.xSpeed > 5){
         this.xSpeed -= 1;
       }
@@ -201,38 +214,46 @@ class Vehicle {
     else if (this.chance === 3) {
       this.changeColour();
     }
+    console.log(this.stop);
+  }
+
+  //making the cars stop
+  stop_cars(){
+    this.stop = 0;
   }
 }
 
 
 //challenge feature #2
 class TrafficLight {
-  constructor(x,y, redlight){
+  constructor(x,y){ //setting the values
     this.x = x;
     this.y = y;
-    this.pause = 120;
-    this.redlight = redlight;
-    if(this.redlight === 0){ //off
-      this.r = 0;
-    }
-    else{
-      this.r = color(255,0,0);
-    }
-    if(this.redlight === 1){ //on  
-      this.g = 0;
-    }
-    else{
-      this.g = color(0,255,0);
-    }
+    this.r = 0;
+    this.g = color(0,255,0);
   }
   display(){
     rectMode(CENTER);
     fill(0);
     rect(this.x, this.y, 50, 100);
+    //red
     fill(this.r);
     circle(this.x, this.y-20, 25);
+    //green
     fill(this.g);
     circle(this.x, this.y+20, 25);
+  }
+  //turns on the green light
+  green_light(){
+    console.log('greenlight');
+    this.r = 0;
+    this.g = color(0,255,0);
+  }
+  //turns on the read light
+  red_light(){
+    console.log('redlight');
+    this.r = color(255, 0, 0);
+    this.g = 0;
   }
 }
 
