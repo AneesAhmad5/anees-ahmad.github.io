@@ -28,18 +28,33 @@ function draw() {
   draw_road(); // creating a road
   // getting all the cars to move
   TrafficLight1.display();
-  for (let i = 0; i < eastbound.length; i++) { //looping through the items in the index
-    eastbound[i].action(); 
-  }
-  for (let i = 0; i < westbound.length; i++) { 
-    westbound[i].action(); 
-  }
 
+  if(TrafficLight1.stop !== true){
+    for (let i = 0; i < eastbound.length; i++) { //looping through the items in the index
+      eastbound[i].start_cars(); //starting the cars to move
+      eastbound[i].action(); 
+    }
+    for (let i = 0; i < westbound.length; i++) { 
+      westbound[i].start_cars(); 
+      westbound[i].action(); 
+    }
+  }
+  else{ //stopping the cars if the Traffic Light is on stop.
+    for (let i = 0; i < eastbound.length; i++) { //looping through the items in the index
+      eastbound[i].stop_cars();
+      eastbound[i].action();  
+    }
+    for (let i = 0; i < westbound.length; i++) { 
+      westbound[i].stop_cars();
+      westbound[i].action(); 
+    }
+  }
   //for challenge #2, we need to start the green light after 120 frams
   framecounter ++;
   console.log(framecounter);
   if(framecounter === 120){
     TrafficLight1.green_light();
+
   }
 }
 
@@ -221,6 +236,11 @@ class Vehicle {
   stop_cars(){
     this.stop = 0;
   }
+
+  //making the cars start again
+  start_cars(){
+    this.stop = 1;
+  }
 }
 
 
@@ -231,6 +251,7 @@ class TrafficLight {
     this.y = y;
     this.r = 0;
     this.g = color(0,255,0);
+    this.stop = false;
   }
   display(){
     rectMode(CENTER);
@@ -248,9 +269,11 @@ class TrafficLight {
     console.log('greenlight');
     this.r = 0;
     this.g = color(0,255,0);
+    this.stop = false;
   }
-  //turns on the read light
+  //turns on the red light
   red_light(){
+    this.stop = true;
     console.log('redlight');
     this.r = color(255, 0, 0);
     this.g = 0;
