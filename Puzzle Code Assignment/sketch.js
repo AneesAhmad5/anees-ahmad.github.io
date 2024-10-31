@@ -1,4 +1,4 @@
-//Puzzle Game Assignment 
+// Puzzle Game Assignment 
 // Anees Ahmad
 // 10/30/2024
 // A program that creates a puzzle game board requiring the player to click squares to change their colour.
@@ -7,14 +7,15 @@ let NUM_ROWS = 4;
 let NUM_COLS = 5;
 let rectWidth, rectHeight;
 let currentRow, currentCol;
-//counting the number of white or black squares
-let squares_b = 16, squares_w = 4;
 
+//counting the number of white or black squares
+let squares_b = 0, squares_w = 0;
+
+//the array is all set to 0 to make it simple.
 let gridData = [[0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0],
-[0, 255, 0, 0, 0],
-[255, 255, 255, 0, 0]];
-
+[0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0]];
 
 
 function setup() {
@@ -22,20 +23,22 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   rectWidth = width / NUM_COLS;
   rectHeight = height / NUM_ROWS;
+  randomize_squares();
 }
 
 function draw() {
   background(220);
   determineActiveSquare();   //figure out which tile the mouse cursor is over
   drawGrid();               //render the current game board to the screen (and the overlay)
-  if(squares_b === 20 || squares_w === 20){
+  if(squares_b === 20 || squares_w === 20){ //adding a win condition when either black or white squares hit a total of 20.
     win_condition();
   }
+  coloured_overlay();
 }
 
 
-function mousePressed() {
-  if (keyIsPressed && keyCode === 16) {
+function mousePressed() { 
+  if (keyIsPressed && keyCode === 16) { //if shift is pressed, 
     flip(currentCol, currentRow);
   }
   else {
@@ -56,10 +59,9 @@ function flip(col, row) {
       if (gridData[row][col] === 0) {
         gridData[row][col] = 255;
       }
-      else gridData[row][col] = 0;
-
-
+      else {gridData[row][col] = 0;}
     }
+    //verifying and checking the number of white/black squares after each time they change. 
     check_colours();
     console.log('w: ' + squares_w, '   b: ' + squares_b);
   }
@@ -70,6 +72,22 @@ function determineActiveSquare() {
   currentRow = int(mouseY / rectHeight);
   currentCol = int(mouseX / rectWidth);
 }
+
+
+
+function coloured_overlay(){
+  fill(0,255,0,100);
+  if(keyIsPressed && keyCode === 16){
+    rect(currentCol*rectWidth, currentRow*rectHeight, rectWidth, rectHeight);  
+  }
+  else{
+    rect(currentCol*rectWidth, currentRow*rectHeight, rectWidth, rectHeight); 
+    rect(currentCol*rectWidth, currentRow*rectHeight, rectWidth, rectHeight);   
+  }
+  console.log(currentRow, currentCol);
+}
+
+
 
 function drawGrid() {
   // Render a grid of squares - fill color set according to data stored in the 2D array
@@ -83,7 +101,7 @@ function drawGrid() {
 
 function check_colours(){
   squares_b = 0;
-  squares_w = 0
+  squares_w = 0;
   for (let x = 0; x < NUM_COLS; x++) {
     for (let y = 0; y < NUM_ROWS; y++) {
       if(gridData[y][x] === 0){
@@ -94,6 +112,22 @@ function check_colours(){
       }
     }
   }
+}
+
+
+function randomize_squares(){
+  let random_choice;
+  for (let x = 0; x < NUM_COLS; x++) {
+    for (let y = 0; y < NUM_ROWS; y++) {
+      random_choice = int(random(0,2));
+      if(random_choice === 1){
+        gridData[y][x] = 255;
+      }
+      else{
+        gridData[y][x] = 0;
+      }
+    }
+  }  
 }
 
 function win_condition(){
