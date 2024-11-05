@@ -10,6 +10,8 @@ let currentRow, currentCol;
 
 //counting the number of white or black squares
 let squares_b = 0, squares_w = 0;
+//adding a variable that checks whether or not spacebar has been pressed.
+let spaceBar = false;
 
 //the array is all set to 0 to make it simple.
 let gridData = [[0, 0, 0, 0, 0],
@@ -26,6 +28,19 @@ function setup() {
   randomize_squares();
 }
 
+//creating a toggle function for the challenge feature that checks if the spacebar has been checked.
+function keyPressed(){
+  if(keyCode === 32){
+    if(spaceBar === false){
+      spaceBar = true;
+    }
+    else{
+      spaceBar = false;
+    }
+  }
+}
+
+
 function draw() {
   background(220);
   determineActiveSquare();   //figure out which tile the mouse cursor is over
@@ -38,16 +53,30 @@ function draw() {
 
 
 function mousePressed() { 
-  if (keyIsPressed && keyCode === 16) { //if shift is pressed, 
-    flip(currentCol, currentRow);
+  if(spaceBar === false){
+    if (keyIsPressed && keyCode === 16) { //if shift is pressed, 
+      flip(currentCol, currentRow);
+    }
+    else {
+      // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
+      flip(currentCol, currentRow);
+      flip(currentCol - 1, currentRow);
+      flip(currentCol + 1, currentRow);
+      flip(currentCol, currentRow - 1);
+      flip(currentCol, currentRow + 1);
+    }
   }
-  else {
-    // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
-    flip(currentCol, currentRow);
-    flip(currentCol - 1, currentRow);
-    flip(currentCol + 1, currentRow);
-    flip(currentCol, currentRow - 1);
-    flip(currentCol, currentRow + 1);
+  else{
+    if (keyIsPressed && keyCode === 16) { //if shift is pressed, 
+      flip(currentCol, currentRow);
+    }
+    else {
+      // cross-shaped pattern flips on a mouseclick. Boundary conditions are checked within the flip function to ensure in-bounds access for array
+      flip(currentCol, currentRow);
+      flip(currentCol + 1, currentRow);
+      flip(currentCol + 1, currentRow+1);
+      flip(currentCol, currentRow + 1);
+    }
   }
 }
 
@@ -74,17 +103,33 @@ function determineActiveSquare() {
 }
 
 
-
+//adding the green overlay that signals which squares are
 function coloured_overlay(){
-  fill(0,255,0,100);
-  if(keyIsPressed && keyCode === 16){
-    rect(currentCol*rectWidth, currentRow*rectHeight, rectWidth, rectHeight);  
+  let x = currentCol*rectWidth, y = currentRow*rectHeight;
+  fill(0,0,255,100);
+  if(spaceBar === false){
+    if(keyIsPressed && keyCode === 16){
+      rect(x, y, rectWidth, rectHeight);  
+    }
+    else{
+      rect(x, y, rectWidth, rectHeight);
+      rect(x, y-rectHeight, rectWidth, rectHeight);
+      rect(x, y+rectHeight, rectWidth, rectHeight);
+      rect(x+rectWidth, y, rectWidth, rectHeight);
+      rect(x-rectWidth, y, rectWidth, rectHeight);
+    }
   }
   else{
-    rect(currentCol*rectWidth, currentRow*rectHeight, rectWidth, rectHeight); 
-    rect(currentCol*rectWidth, currentRow*rectHeight, rectWidth, rectHeight);   
+    if(keyIsPressed && keyCode === 16){
+      rect(x, y, rectWidth, rectHeight);  
+    }
+    else{
+      rect(x, y, rectWidth, rectHeight);
+      rect(x+rectWidth, y, rectWidth, rectHeight);
+      rect(x, y+rectHeight, rectWidth, rectHeight);
+      rect(x+rectWidth, y+rectHeight, rectWidth, rectHeight);
+    }
   }
-  console.log(currentRow, currentCol);
 }
 
 
