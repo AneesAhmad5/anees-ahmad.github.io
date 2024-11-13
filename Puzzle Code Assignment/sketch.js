@@ -15,9 +15,9 @@ let spaceBar = false;
 
 //the array is all set to 0 to make it simple.
 let gridData = [[0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0]];
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0]];
 
 
 function setup() {
@@ -31,10 +31,10 @@ function setup() {
 //creating a toggle function for the challenge feature that checks if the spacebar has been checked.
 function keyPressed(){
   if(keyCode === 32){
-    if(spaceBar === false){
+    if(spaceBar === false){ //if its off, then turn it on
       spaceBar = true;
     }
-    else{
+    else{ //if its on, then turn it off.
       spaceBar = false;
     }
   }
@@ -48,13 +48,13 @@ function draw() {
   if(squares_b === 20 || squares_w === 20){ //adding a win condition when either black or white squares hit a total of 20.
     win_condition();
   }
-  coloured_overlay();
+  coloured_overlay(); //infinitely adding the colour effect
 }
 
 
 function mousePressed() { 
-  if(spaceBar === false){
-    if (keyIsPressed && keyCode === 16) { //if shift is pressed, 
+  if(spaceBar === false){ // // "+" shape flipping
+    if (keyIsPressed && keyCode === 16) { //if shift is pressed, only one square flipped
       flip(currentCol, currentRow);
     }
     else {
@@ -66,8 +66,8 @@ function mousePressed() {
       flip(currentCol, currentRow + 1);
     }
   }
-  else{
-    if (keyIsPressed && keyCode === 16) { //if shift is pressed, 
+  else{  //square shape flipping
+    if (keyIsPressed && keyCode === 16) { //if shift is pressed, only one square flipped
       flip(currentCol, currentRow);
     }
     else {
@@ -88,7 +88,9 @@ function flip(col, row) {
       if (gridData[row][col] === 0) {
         gridData[row][col] = 255;
       }
-      else {gridData[row][col] = 0;}
+      else {
+        gridData[row][col] = 0;
+      }
     }
     //verifying and checking the number of white/black squares after each time they change. 
     check_colours();
@@ -106,12 +108,12 @@ function determineActiveSquare() {
 //adding the green overlay that signals which squares are
 function coloured_overlay(){
   let x = currentCol*rectWidth, y = currentRow*rectHeight;
-  fill(0,0,255,100);
-  if(spaceBar === false){
-    if(keyIsPressed && keyCode === 16){
+  fill(0,0,255 ,100);
+  if(spaceBar === false){ // "+" shape overlay
+    if(keyIsPressed && keyCode === 16){ //shift -- one square
       rect(x, y, rectWidth, rectHeight);  
     }
-    else{
+    else{ //requires five squares
       rect(x, y, rectWidth, rectHeight);
       rect(x, y-rectHeight, rectWidth, rectHeight);
       rect(x, y+rectHeight, rectWidth, rectHeight);
@@ -119,12 +121,12 @@ function coloured_overlay(){
       rect(x-rectWidth, y, rectWidth, rectHeight);
     }
   }
-  else{
-    if(keyIsPressed && keyCode === 16){
+  else{ // square shape overlay
+    if(keyIsPressed && keyCode === 16){ //shift -- one square
       rect(x, y, rectWidth, rectHeight);  
     }
     else{
-      rect(x, y, rectWidth, rectHeight);
+      rect(x, y, rectWidth, rectHeight); //square -- four squares
       rect(x+rectWidth, y, rectWidth, rectHeight);
       rect(x, y+rectHeight, rectWidth, rectHeight);
       rect(x+rectWidth, y+rectHeight, rectWidth, rectHeight);
@@ -144,38 +146,38 @@ function drawGrid() {
   }
 }
 
-function check_colours(){
+function check_colours(){ //adding a counter to see how many black or white squares are on the screen
   squares_b = 0;
   squares_w = 0;
   for (let x = 0; x < NUM_COLS; x++) {
     for (let y = 0; y < NUM_ROWS; y++) {
       if(gridData[y][x] === 0){
-        squares_b += 1;
-      }
+        squares_b += 1; //black squares
+      } 
       if(gridData[y][x] === 255){
-        squares_w += 1;
+        squares_w += 1; //white squares
       }
     }
   }
 }
 
 
-function randomize_squares(){
-  let random_choice;
+function randomize_squares(){ // a function that randomizes which colour each square will be on start
+  let random_choice; 
   for (let x = 0; x < NUM_COLS; x++) {
     for (let y = 0; y < NUM_ROWS; y++) {
-      random_choice = int(random(0,2));
+      random_choice = int(random(0,2)); //random choice between 0 & 1
       if(random_choice === 1){
-        gridData[y][x] = 255;
+        gridData[y][x] = 255; //white
       }
       else{
-        gridData[y][x] = 0;
+        gridData[y][x] = 0; //black
       }
     }
   }  
 }
 
-function win_condition(){
+function win_condition(){ //adding a win screen that displays once all squares are the same colour.
   textAlign(CENTER);
   textSize(200);
   fill(0,255,0);
