@@ -1,7 +1,6 @@
 // Recusion and Fractals
 // Anees Ahmad
 // 11/13/2024
-//
 
 
 let seed;
