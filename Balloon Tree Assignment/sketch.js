@@ -5,7 +5,7 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-
+let leaveBranch = 5; //challenge feature #1, changes how many branches the balloons grow on.
 let seed; //creating a random seed for the colours.
 let scale = 15;
 function setup() {
@@ -44,12 +44,21 @@ function drawTree(x1, y1, angle, depth, ) {
     drawTree(x2, y2, angle + treeAngle, depth - 1);
     //3rd
     drawTree(x2, y2, angle, depth - 1);
-    if(depth <5){
+    if(depth <leaveBranch){
       drawLeaves(x2,y2, depth);
     }
 
   }
 
+}
+
+function keyPressed(){
+  if(keyCode === 90 && leaveBranch > 0){
+    leaveBranch --;
+  }
+  else if(keyCode === 88 && leaveBranch < 7){
+    leaveBranch ++;
+  }
 }
 function drawLeaves(x,y,diameter){
   noStroke();
